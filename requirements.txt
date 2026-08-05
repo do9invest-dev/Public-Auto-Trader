@@ -1,9 +1,20 @@
 # Core
-streamlit>=1.28.0
-requests>=2.31.0
-pandas>=2.0.0
-numpy>=1.24.0
-plotly>=5.15.0
+streamlit>=1.28.0,<2
+requests>=2.31.0,<3
+pandas>=2.0.0,<3
+numpy>=1.24.0,<3
+plotly>=5.15.0,<7
 
 # Utilities
-python-dotenv>=1.0.0
+python-dotenv>=1.0.0,<2
+
+# --- Compatibility pins -------------------------------------------------
+# starlette 1.4.0 added a required keyword-only arg (thread_minimum_size)
+# to GZipResponder.__init__. Streamlit 1.61.0's MediaAwareGZipMiddleware
+# still calls it the old way, so every request 500s with:
+#   TypeError: GZipResponder.__init__() missing 1 required
+#   keyword-only argument: 'thread_minimum_size'
+# Streamlit declares starlette<2,>=0.46.0, so resolvers pick up 1.4.0.
+# Remove this pin once Streamlit ships a release that handles the new
+# signature. (Pinned 2026-08-05.)
+starlette>=0.46.0,<1.4
